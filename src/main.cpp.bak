@@ -1,31 +1,3 @@
-/*
-Effect of P
-- Sets the car's steering in proportion to the crosstrack error
-- Might cause overshoot and/or oscillation
-- Experiments and observation
-    P = 1.0: overshooting
-    P = 0.01: too slow adjustment
-    P = 0.1: final choice
-
-Effect of I
-- Helps the car to steer back to correct position considering bias
-- Experiments and observation
-    I = 0.2: too much steering
-    I = 0.0001: too little adjustment 
-    I = 0.005: final choice
-
-Effect of D
-- Helps the car to reduce overshooting and/or oscillation
-- Experiments and observation
-    D = 5.0: too much counter-steering
-    D = 1.0: too little counter-steering
-    D = 3.0: final choice
-
-Final choices of hyperparameters
-P, I and D are set as (0.1, 0.005, 3.0) by manually trying different combinations. 
-Future improvement may be achieved by using the Twiddle algorithm to fine-tune the parameters.
-*/
-
 #include <math.h>
 #include <uWS/uWS.h>
 #include <iostream>
@@ -65,7 +37,6 @@ int main() {
   /**
    * TODO: Initialize the pid variable.
    */
-  pid.Init(0.1, 0.005, 3.0);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
@@ -92,13 +63,6 @@ int main() {
            * NOTE: Feel free to play around with the throttle and speed.
            *   Maybe use another PID controller to control the speed!
            */
-          pid.UpdateError(cte);
-          steer_value = pid.TotalError();
-          if (steer_value > 1) {
-            steer_value = 1;
-          } else if (steer_value < -1) {
-            steer_value = -1;
-          }
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
